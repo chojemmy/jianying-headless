@@ -100,6 +100,17 @@ def parse_source(raw):
     direct = Path(raw).expanduser()
     if direct.is_file():
         return direct.resolve()
+    # Windows paths use backslashes as directory separators. Check common
+    # quoted/drag forms as literal paths before POSIX shlex consumes them.
+    if os.name == 'nt':
+        candidates = []
+        if len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in {'"', "'"}:
+            candidates.append(raw[1:-1])
+        candidates.append(raw.replace('\\ ', ' ').replace("\\'", "'").replace('\\"', '"'))
+        for value in candidates:
+            path = Path(value).expanduser()
+            if path.is_file():
+                return path.resolve()
     parts = shlex.split(raw)
     if len(parts) != 1:
         raise ValueError('请只拖入一个本地视频文件。')

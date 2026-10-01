@@ -1,6 +1,7 @@
 """Small platform-neutral FFmpeg process and executable helpers."""
 from pathlib import Path
 import os
+import re
 import shutil
 import subprocess
 
@@ -28,6 +29,26 @@ def version(executable):
     if result.returncode:
         raise RuntimeError(f'Unable to read {Path(executable).name} version: {result.stderr.strip()}')
     return result.stdout.splitlines()[0].strip() if result.stdout else ''
+
+
+def filtergraph_file_args(executable, filename):
+    """Keep graphs off Windows' command line and support FFmpeg 9+.
+
+    Older FFmpeg uses filter_complex_script. Newer releases removed that
+    option and read string options from files with the -/option syntax.
+    Detect the installed command's capabilities rather than guessing a version.
+    """
+    result = subprocess.run([str(executable), '-hide_banner', '-h', 'full'],
+                            capture_output=True, text=True, encoding='utf-8',
+                            errors='replace', timeout=30)
+    if result.returncode:
+        raise RuntimeError('Unable to inspect FFmpeg filtergraph options')
+    help_text = result.stdout + result.stderr
+    if re.search(r'(?m)^\s*-filter_complex_script\s', help_text):
+        return ['-filter_complex_script', str(filename)]
+    if re.search(r'(?m)^\s*-filter_complex\s', help_text):
+        return ['-/filter_complex', str(filename)]
+    raise RuntimeError('FFmpeg does not provide complex filtergraph support')
 
 
 def run(executable, args, stdout_path, stderr_path, timeout, cwd=None):

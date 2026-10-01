@@ -37,6 +37,10 @@ class FirstDraftTests(unittest.TestCase):
             start.parse_source('$(touch should-not-exist)')
         self.assertFalse((ROOT / 'should-not-exist').exists())
 
+    @unittest.skipUnless(start.os.name == 'nt', 'Windows quoted drag path')
+    def test_double_quoted_windows_path_preserves_backslashes(self):
+        self.assertEqual(start.parse_source('"' + str(self.source) + '"'), self.source)
+
     def test_plan_is_real_media_and_editable_text_without_cache_resources(self):
         plan = start.make_plan(self.source, self.media, 'example')
         self.assertEqual(plan['canvas'], {'width': 1080, 'height': 1920, 'fps': 30})

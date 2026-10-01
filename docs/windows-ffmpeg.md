@@ -13,7 +13,30 @@ account or resource-cache modules.
 Executables resolve from the command options first, the JIANYING_FFMPEG and
 JIANYING_FFPROBE environment variables second, and PATH last.
 
+The Windows doctor checks both executables. FFmpeg releases that still expose
+`-filter_complex_script` use that option; FFmpeg 9 and later use the supported
+`-/filter_complex` file-argument form. The graph remains in an audit file,
+including for long timelines that exceed Windows command-line limits.
+
+The native macOS bridge cannot be reused with the Windows application: it
+links Apple Silicon/macOS libraries and checks macOS-specific component
+identities. Installing Jianying for Windows does not add native export or
+editable Windows draft support to this backend.
+
 ## Build, verify and export
+
+For a local Windows checkout, the convenience entrypoint creates a unique job,
+chooses an installed Chinese font when none is supplied, and performs all three
+steps:
+
+~~~powershell
+python tools\windows_cli.py doctor
+python tools\windows_cli.py render --plan D:\input\plan.json
+~~~
+
+The project license still applies to this entrypoint and its output workflow.
+It is intended for personal non-commercial study. This support does not turn
+the backend into a native Windows Jianying integration.
 
 ~~~powershell
 python skills\yichen-jianying-edit\scripts\headless_draft.py build --plan D:\input\plan.json --out D:\jianying-headless\work\windows-build

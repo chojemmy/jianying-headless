@@ -15,11 +15,33 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'engine'))
 import ffmpeg_graph
+import ffmpeg_tools
 import windows_export
 import windows_portable as portable
 
 TEST_WORK = ROOT / 'work/windows-ffmpeg-tests'
 TEST_WORK.mkdir(parents=True, exist_ok=True)
+
+
+class FiltergraphFileCompatibilityTests(unittest.TestCase):
+    def test_legacy_help_uses_script_option(self):
+        response = subprocess.CompletedProcess([], 0,
+            '-filter_complex <graph>\n-filter_complex_script <filename>\n', '')
+        with patch.object(ffmpeg_tools.subprocess, 'run', return_value=response):
+            self.assertEqual(ffmpeg_tools.filtergraph_file_args('ffmpeg', '中文 graph.txt'),
+                             ['-filter_complex_script', '中文 graph.txt'])
+
+    def test_removed_script_option_uses_file_argument(self):
+        response = subprocess.CompletedProcess([], 0, '-filter_complex <graph_description>\n', '')
+        with patch.object(ffmpeg_tools.subprocess, 'run', return_value=response):
+            self.assertEqual(ffmpeg_tools.filtergraph_file_args('ffmpeg', '中文 graph.txt'),
+                             ['-/filter_complex', '中文 graph.txt'])
+
+    def test_failed_help_is_not_treated_as_supported(self):
+        response = subprocess.CompletedProcess([], 1, '', 'executable unavailable')
+        with patch.object(ffmpeg_tools.subprocess, 'run', return_value=response):
+            with self.assertRaisesRegex(RuntimeError, 'Unable to inspect'):
+                ffmpeg_tools.filtergraph_file_args('ffmpeg', 'graph.txt')
 
 
 class WindowsFfmpegSemanticsTests(unittest.TestCase):

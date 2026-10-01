@@ -47,10 +47,10 @@ PINS = {
     'native_export.cpp': 'c60da6c65f5bb7ac733b8f5b619401be3921f9254b953a55903d4e7566156379',
     'headless_runtime.py': '81d75135473eb531688099b45a5a2acf922b4c385a8feaf39f0c92963b46ccca',
     'blueprint.json': '91f7eddad5bff9af23eb88b53713c180e3e3d4054edd469140cfa9aa56bc1dc9',
-    'windows_portable.py': '707e5f1040ad59384f864e5e2ad41ff2c93853be8c7bd562d44f6fb632d244ca',
-    'windows_export.py': 'b4f20ce94b6ca0a72d5c542bc56ce9fd23a13a09826ba71a34beb99e23474fc8',
+    'windows_portable.py': '20b0f3cd77163637cc3a9ff89d3eaee756a01e40fa3875086abef523c494065b',
+    'windows_export.py': '7716182165b931d53d921b4c4b0c302f42eafd0a22aa15fbba8e7690b2ae526c',
     'ffmpeg_graph.py': 'bc0d897993f9e7c2c5f6c0233a3002c07e235323da20fe0eca2755f1410aa594',
-    'ffmpeg_tools.py': 'c8d0817c57573e0e755f3277466fa13e08bdc588d90471344faaf30438e9992f',
+    'ffmpeg_tools.py': 'c03e3e81ff734826ecd7129d1ad005b690a9d1d8f836a0b57228d863bcda5392',
 }
 
 for name, expected in PINS.items():

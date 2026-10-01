@@ -9,6 +9,9 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
+if sys.platform == 'win32':
+    raise unittest.SkipTest('Native macOS bridge requires fcntl and Apple toolchain')
+
 ROOT = Path(__file__).resolve().parent.parent
 for part in ('engine', 'bridge', 'tools'):
     sys.path.insert(0, str(ROOT / part))

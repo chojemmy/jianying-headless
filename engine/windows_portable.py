@@ -353,8 +353,11 @@ def main():
     try:
         if args.command == 'doctor':
             executable = ffmpeg_tools.resolve_tool('ffprobe', None, 'JIANYING_FFPROBE')
+            renderer = ffmpeg_tools.resolve_tool('ffmpeg', None, 'JIANYING_FFMPEG')
             result = {'status': 'ok', 'backend': 'windows-ffmpeg',
                       'ffprobe_version': ffmpeg_tools.version(executable),
+                      'ffmpeg_version': ffmpeg_tools.version(renderer),
+                      'filtergraph_file_option': ffmpeg_tools.filtergraph_file_args(renderer, 'filter_complex.txt')[0],
                       'native_editable_draft': False}
         elif args.command == 'build':
             result = build(args.plan, args.out, args.ffprobe)

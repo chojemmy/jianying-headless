@@ -169,7 +169,8 @@ def run(build, out, ffmpeg=None, ffprobe=None, font=None, crf=18, preset='medium
             if item['still']:
                 command += ['-loop', '1']
             command += ['-i', item['path']]
-        command += ['-filter_complex_script', 'filter_complex.txt', '-map', video]
+        command += ffmpeg_tools.filtergraph_file_args(ffmpeg, 'filter_complex.txt')
+        command += ['-map', video]
         if audio:
             command += ['-map', audio]
         command += ['-c:v', 'libx264', '-preset', preset, '-crf', str(crf),
